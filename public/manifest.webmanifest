@@ -1,0 +1,15 @@
+{
+  "name": "Nemo's World",
+  "short_name": "Nemo's World",
+  "description": "Gotcha Day and age counters, appointments and medication, a daily photo, and a walk diary for Nemo the Shih Tzu.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff7ef",
+  "theme_color": "#fff7ef",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

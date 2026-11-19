@@ -418,3 +418,15 @@ a { color: inherit; text-decoration: none; }
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
   }
 }
+
+/* Keep content clear of the iPhone notch in landscape (needed with viewport-fit=cover) */
+.header, .content {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+@media (min-width: 768px) {
+  .header, .content {
+    padding-left: max(32px, env(safe-area-inset-left));
+    padding-right: max(32px, env(safe-area-inset-right));
+  }
+}
