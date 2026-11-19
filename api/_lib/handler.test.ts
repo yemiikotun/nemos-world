@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type Anthropic from '@anthropic-ai/sdk';
-import { handleRecap, type CreateMessage } from './recap';
+import { handleRecap, type CreateMessage } from '../recap';
 
 const week = { entries: [{ date: '2026-11-18', text: 'Zoomies at the park.', walkMinutes: 35, mood: 'playful' }] };
 
