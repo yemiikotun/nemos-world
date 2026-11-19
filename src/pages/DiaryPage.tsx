@@ -5,6 +5,7 @@ import PawIcon from '../components/PawIcon';
 import DiaryEntryCard from '../components/diary/DiaryEntryCard';
 import DiaryForm from '../components/diary/DiaryForm';
 import WalkStatsCard from '../components/diary/WalkStatsCard';
+import NemosWeekCard from '../components/diary/NemosWeekCard';
 import { deleteEntry, findByDate, saveEntry, searchEntries, sortNewestFirst, type DiaryEntry, type DiaryInput } from '../lib/diary';
 import { toIsoDate } from '../lib/dates';
 import { newId } from '../lib/storage';
@@ -58,6 +59,7 @@ export default function DiaryPage() {
       </div>
 
       <WalkStatsCard entries={entries} today={today} />
+      <NemosWeekCard entries={entries} today={today} />
 
       {entries.length === 0 ? (
         <section className="card empty-state diary-empty">
