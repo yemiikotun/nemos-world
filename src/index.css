@@ -418,15 +418,3 @@ a { color: inherit; text-decoration: none; }
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
   }
 }
-
-/* Nemo's Week (AI recap) */
-.nemos-week { margin-bottom: 24px; }
-.nemos-week-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-.nemos-week-sub { margin-top: 2px !important; font-size: 0.9rem; }
-.nemos-week-note { margin: 12px 0 0 !important; }
-.nemos-week-recap {
-  margin: 14px 0 0; padding: 14px 16px; border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0;
-  background: var(--accent-soft); color: var(--text); white-space: pre-wrap; line-height: 1.6;
-  animation: fade-in 300ms ease-out;
-}
-.nemos-week-credit { display: block; margin-top: 8px; }
