@@ -8,7 +8,7 @@ I built it as part of my AI project portfolio: I wrote the product spec and dire
 [Claude Code](https://claude.com/claude-code) through building it phase by phase,
 reviewing and testing each step.
 
-**Live demo:** _coming soon_
+**Live demo:** [nemos-world.vercel.app](https://nemos-world.vercel.app)
 
 <p>
   <img src="docs/screenshots/home-desktop.jpg" alt="The Nemo's World home page on a desktop screen: Gotcha Day and Age counters, a photo of Nemo, upcoming appointments and today's diary entry" width="640">

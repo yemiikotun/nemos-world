@@ -58,6 +58,11 @@ export default function PictureOfTheDay({ today, variant = 'card' }: Props) {
             height={photo.height}
             loading="lazy"
             decoding="async"
+            // A cached image can finish loading before React starts listening for
+            // onLoad, so also check whether it's already complete when it mounts.
+            ref={(img) => {
+              if (img?.complete && img.naturalWidth > 0) setLoadedSrc(photo.src);
+            }}
             onLoad={() => setLoadedSrc(photo.src)}
             onError={() => setLoadedSrc(photo.src)}
             alt={photo.caption ?? `A photo of ${NEMO.name}`}
