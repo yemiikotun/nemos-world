@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.*
+.DS_Store
+*.log
+# Local Claude Code settings (contain paths on this computer)
+.claude/
+# Vercel CLI
+.vercel
+*.tsbuildinfo
