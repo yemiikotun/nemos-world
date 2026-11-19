@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import PawIcon from './PawIcon';
 import { PHOTOS } from '../lib/photos';
 import { photoOfTheDayIndex } from '../lib/dates';
 import { pickDifferentIndex } from '../lib/random';
 import { NEMO } from '../lib/nemo';
+import { useOnlineStatus } from '../lib/useOnlineStatus';
 
 interface Props {
   today: Date;
@@ -16,6 +17,12 @@ export default function PictureOfTheDay({ today, variant = 'card' }: Props) {
   const dailyIndex = photoOfTheDayIndex(PHOTOS.length, today);
   const [shuffledIndex, setShuffledIndex] = useState<number | null>(null);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const online = useOnlineStatus();
+  // Back online: try the photo again.
+  useEffect(() => {
+    if (online) setFailedSrc(null);
+  }, [online]);
   const index = shuffledIndex ?? dailyIndex;
   const photo = PHOTOS[index];
   const isShuffled = shuffledIndex !== null && shuffledIndex !== dailyIndex;
@@ -47,7 +54,18 @@ export default function PictureOfTheDay({ today, variant = 'card' }: Props) {
         )}
       </div>
 
-      {photo ? (
+      {photo && failedSrc === photo.src ? (
+        // Usually means the phone is offline and hasn't saved this photo yet.
+        <div className="photo-unavailable" role="status">
+          <span className="icon-bubble"><PawIcon size={20} /></span>
+          <p>This photo will appear when you're back online.</p>
+          {PHOTOS.length > 1 && (
+            <button type="button" className="link-button" onClick={() => setShuffledIndex(pickDifferentIndex(PHOTOS.length, index))}>
+              Try another photo
+            </button>
+          )}
+        </div>
+      ) : photo ? (
         <figure className={`photo-frame${loadedSrc === photo.src ? '' : ' photo-loading'}`}>
           <img
             key={photo.name}
@@ -64,7 +82,7 @@ export default function PictureOfTheDay({ today, variant = 'card' }: Props) {
               if (img?.complete && img.naturalWidth > 0) setLoadedSrc(photo.src);
             }}
             onLoad={() => setLoadedSrc(photo.src)}
-            onError={() => setLoadedSrc(photo.src)}
+            onError={() => setFailedSrc(photo.src)}
             alt={photo.caption ?? `A photo of ${NEMO.name}`}
           />
           {photo.caption && <figcaption>{photo.caption}</figcaption>}

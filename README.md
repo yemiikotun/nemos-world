@@ -39,6 +39,8 @@ reviewing and testing each step.
 - **Nemo's Diary**: one entry per day with what Nemo did, how long he walked and his
   mood. Includes keyword search, walk stats and a 7-day walk chart.
 - **Home dashboard** that brings it all together.
+- **Installs and works offline**: add it to a phone's home screen and it opens in its
+  own window with a paw-print icon, and keeps working with no internet connection.
 - Works on phones and desktops, in light and dark mode, with keyboard and
   screen-reader support.
 
@@ -50,8 +52,9 @@ reviewing and testing each step.
 | Build | Vite, with [vite-imagetools](https://github.com/JonasKruckenberg/imagetools) to resize photos to WebP |
 | Dates | date-fns |
 | Tests | Vitest |
-| Styling | Plain CSS with design tokens and automatic dark mode |
-| Data | Saved in the browser (`localStorage`); no backend or login |
+| Styling | Plain CSS with design tokens and automatic dark mode; Nunito font bundled with the app |
+| Data | Saved on the device (`localStorage`); no backend, login, AI service or API keys |
+| Offline | A small hand-written service worker ([`src/service-worker.js`](src/service-worker.js)) |
 
 ## How it's built
 
@@ -60,7 +63,7 @@ reviewing and testing each step.
   [`src/lib/dates.ts`](src/lib/dates.ts). The appointment and diary rules live in
   [`appointments.ts`](src/lib/appointments.ts) and [`diary.ts`](src/lib/diary.ts).
   None of them read the clock or touch the page, which makes them easy to test.
-- **Tested edge cases.** 65 unit tests cover leap days (a Feb 29 birthday is
+- **Tested edge cases.** 68 unit tests cover leap days (a Feb 29 birthday is
   celebrated on Feb 28 in other years), month ends, the day before, of and after an
   anniversary, and late-night times. The tests pass in several time zones.
 - **One storage module.** Everything saved goes through
@@ -68,6 +71,14 @@ reviewing and testing each step.
   means changing one file.
 - **Fast photos.** Each photo is resized to 480 px and 960 px WebP versions at build
   time, and loads only when it scrolls into view.
+- **Works offline.** When the app is first opened, a service worker saves the page,
+  code, styles, font and icons on the device (about 475 KB). After that the app opens
+  with no connection, and diary entries and appointments save as normal. Photos are
+  saved as they're viewed; one that hasn't been seen yet shows a "back online"
+  placeholder. The build fills in the exact file list
+  ([`scripts/service-worker-build.ts`](scripts/service-worker-build.ts)), so phones
+  pick up updates automatically. Tested by switching off the server and the network
+  in Chrome.
 
 ```
 src/

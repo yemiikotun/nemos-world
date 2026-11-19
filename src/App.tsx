@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import BottomNav from './components/BottomNav';
+import OfflineNotice from './components/OfflineNotice';
 import ScrollToTop from './components/ScrollToTop';
 import HomePage from './pages/HomePage';
 import AppointmentsPage from './pages/AppointmentsPage';
@@ -13,6 +14,7 @@ export default function App() {
       <a href="#main" className="skip-link">Skip to content</a>
       <ScrollToTop />
       <Header />
+      <OfflineNotice />
       <main id="main" className="content" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<HomePage />} />

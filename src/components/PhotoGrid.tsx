@@ -21,6 +21,8 @@ export default function PhotoGrid() {
               loading="lazy"
               decoding="async"
               alt={photo.caption ?? `A photo of ${NEMO.name}`}
+              // Offline and not saved yet: show a soft blank tile instead of a broken image.
+              onError={(event) => event.currentTarget.classList.add('photo-missing')}
             />
           </li>
         ))}
