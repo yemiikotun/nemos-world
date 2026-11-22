@@ -111,6 +111,8 @@ export interface DayWalk {
   hasEntry: boolean;
   /** Nemo was boarding, so his walks that day aren't known. */
   boarding: boolean;
+  /** Nemo was at daycare (shown as a gray bar on the chart). */
+  atDaycare: boolean;
 }
 
 /** Walk minutes for each of the last `days` days, oldest first, ending today. */
@@ -118,7 +120,13 @@ export function walksForLastDays(entries: DiaryEntry[], today: Date, days = 7): 
   return Array.from({ length: days }, (_, i) => {
     const date = toIsoDate(addDays(today, i - (days - 1)));
     const entry = findByDate(entries, date);
-    return { date, minutes: entry?.walkMinutes ?? 0, hasEntry: Boolean(entry), boarding: Boolean(entry?.boarding) };
+    return {
+      date,
+      minutes: entry?.walkMinutes ?? 0,
+      hasEntry: Boolean(entry),
+      boarding: Boolean(entry?.boarding),
+      atDaycare: Boolean(entry?.atDaycare),
+    };
   });
 }
 

@@ -154,7 +154,7 @@ describe('daycare and boarding days', () => {
 
   it('marks boarding days in the 7-day walk data', () => {
     const days = walksForLastDays([{ ...entry('f', '2026-11-17', 0, ''), boarding: true }], today);
-    expect(days.find((d) => d.date === '2026-11-17')).toEqual({ date: '2026-11-17', minutes: 0, hasEntry: true, boarding: true });
+    expect(days.find((d) => d.date === '2026-11-17')).toEqual({ date: '2026-11-17', minutes: 0, hasEntry: true, boarding: true, atDaycare: false });
     expect(days.find((d) => d.date === '2026-11-18')?.boarding).toBe(false);
   });
 
@@ -162,5 +162,28 @@ describe('daycare and boarding days', () => {
     expect(isDiaryEntry({ ...entries[0], atDaycare: true })).toBe(true);
     expect(isDiaryEntry({ ...entries[0], boarding: false })).toBe(true);
     expect(isDiaryEntry({ ...entries[0], boarding: 'yes' })).toBe(false);
+  });
+});
+
+describe('daycare days on the walk chart', () => {
+  it('marks daycare days, with or without a walk', () => {
+    const days = walksForLastDays(
+      [
+        { ...entry('a', '2026-11-18', 20, 'Daycare and a walk'), atDaycare: true },
+        { ...entry('b', '2026-11-17', 0, ''), atDaycare: true },
+        entry('c', '2026-11-16', 30, 'Regular day'),
+      ],
+      today,
+    );
+    const byDate = Object.fromEntries(days.map((d) => [d.date, d]));
+    expect(byDate['2026-11-18']).toMatchObject({ minutes: 20, atDaycare: true });
+    expect(byDate['2026-11-17']).toMatchObject({ minutes: 0, atDaycare: true });
+    expect(byDate['2026-11-16']).toMatchObject({ minutes: 30, atDaycare: false });
+    expect(byDate['2026-11-15']).toMatchObject({ hasEntry: false, atDaycare: false });
+  });
+
+  it("doesn't count daycare as walking in the stats", () => {
+    const days = walksForLastDays([{ ...entry('b', '2026-11-17', 0, ''), atDaycare: true }], today);
+    expect(walkStats(days)).toEqual({ totalMinutes: 0, averageMinutes: null, daysWalked: 0 });
   });
 });

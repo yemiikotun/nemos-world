@@ -41,7 +41,8 @@ reviewing and testing each step.
 - **Nemo at Daycare**: one-tap links to the webcams at both of Nemo's daycare
   locations (NoMa and Rosslyn), which open on the daycare's website.
 - **Nemo's Diary**: one entry per day with what Nemo did, how long he walked and his
-  mood. Includes keyword search, walk stats and a 7-day walk chart.
+  mood. Includes keyword search, walk stats and a 7-day chart: orange bars for walk
+  minutes, gray bars for daycare days.
   - Tick **Nemo is in Daycare Today** to mark a daycare day (the narrative becomes
     optional), or **Nemo is in Boarding** for a day he's away: the narrative, walk
     and mood are grayed out, since there's no way to know how that day went.
@@ -70,7 +71,7 @@ reviewing and testing each step.
   [`src/lib/dates.ts`](src/lib/dates.ts). The appointment and diary rules live in
   [`appointments.ts`](src/lib/appointments.ts) and [`diary.ts`](src/lib/diary.ts).
   None of them read the clock or touch the page, which makes them easy to test.
-- **Tested edge cases.** 79 unit tests cover leap days (a Feb 29 birthday is
+- **Tested edge cases.** 81 unit tests cover leap days (a Feb 29 birthday is
   celebrated on Feb 28 in other years), month ends, the day before, of and after an
   anniversary, and late-night times. The tests pass in several time zones.
 - **One storage module.** Everything saved goes through
