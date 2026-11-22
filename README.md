@@ -36,6 +36,8 @@ reviewing and testing each step.
   before repeating, never shows the same one two days in a row, and has a
   **Shuffle** button. Photos are picked up automatically from a folder and resized
   at build time.
+- **Photo gallery**: tap any photo under **All photos** to open it full screen, then
+  swipe, use the ‹ › buttons or the arrow keys to move through them.
 - **Nemo's Diary**: one entry per day with what Nemo did, how long he walked and his
   mood. Includes keyword search, walk stats and a 7-day walk chart.
 - **Home dashboard** that brings it all together.
@@ -63,7 +65,7 @@ reviewing and testing each step.
   [`src/lib/dates.ts`](src/lib/dates.ts). The appointment and diary rules live in
   [`appointments.ts`](src/lib/appointments.ts) and [`diary.ts`](src/lib/diary.ts).
   None of them read the clock or touch the page, which makes them easy to test.
-- **Tested edge cases.** 68 unit tests cover leap days (a Feb 29 birthday is
+- **Tested edge cases.** 72 unit tests cover leap days (a Feb 29 birthday is
   celebrated on Feb 28 in other years), month ends, the day before, of and after an
   anniversary, and late-night times. The tests pass in several time zones.
 - **One storage module.** Everything saved goes through
