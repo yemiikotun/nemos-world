@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import AppointmentsPage from './pages/AppointmentsPage';
 import DiaryPage from './pages/DiaryPage';
 import PhotosPage from './pages/PhotosPage';
+import DaycarePage from './pages/DaycarePage';
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/appointments" element={<AppointmentsPage />} />
           <Route path="/diary" element={<DiaryPage />} />
           <Route path="/photos" element={<PhotosPage />} />
+          <Route path="/daycare" element={<DaycarePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

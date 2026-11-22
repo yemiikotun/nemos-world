@@ -38,6 +38,8 @@ reviewing and testing each step.
   at build time.
 - **Photo gallery**: tap any photo under **All photos** to open it full screen, then
   swipe, use the ‹ › buttons or the arrow keys to move through them.
+- **Nemo at Daycare**: one-tap links to the webcams at both of Nemo's daycare
+  locations (NoMa and Rosslyn), which open on the daycare's website.
 - **Nemo's Diary**: one entry per day with what Nemo did, how long he walked and his
   mood. Includes keyword search, walk stats and a 7-day walk chart.
 - **Home dashboard** that brings it all together.

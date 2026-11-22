@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
 
-const items: { to: string; label: string; icon: ReactNode }[] = [
+const items: { to: string; label: string; fullLabel?: string; icon: ReactNode }[] = [
   {
     to: '/',
     label: 'Home',
@@ -24,6 +24,12 @@ const items: { to: string; label: string; icon: ReactNode }[] = [
     label: 'Photos',
     icon: <svg viewBox="0 0 24 24" {...stroke}><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="10" r="2" /><path d="M21 16l-5-5-8 8" /></svg>,
   },
+  {
+    to: '/daycare',
+    label: 'Daycare',
+    fullLabel: 'Nemo at Daycare',
+    icon: <svg viewBox="0 0 24 24" {...stroke}><rect x="2" y="6" width="14" height="12" rx="2" /><path d="M16 10l6-3v10l-6-3z" /></svg>,
+  },
 ];
 
 export default function BottomNav() {
@@ -35,6 +41,7 @@ export default function BottomNav() {
           to={item.to}
           end={item.to === '/'}
           className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+          aria-label={item.fullLabel}
         >
           <span className="nav-icon">{item.icon}</span>
           <span className="nav-label">{item.label}</span>
