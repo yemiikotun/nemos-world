@@ -5,6 +5,7 @@ import {
   formatMinutes,
   isDateTaken,
   isDiaryEntry,
+  needsNarrative,
   saveEntry,
   searchEntries,
   sortNewestFirst,
@@ -113,5 +114,53 @@ describe('isDiaryEntry', () => {
     expect(isDiaryEntry({ ...entries[0], mood: 'angry' })).toBe(false);
     expect(isDiaryEntry({ ...entries[0], walkMinutes: '30' })).toBe(false);
     expect(isDiaryEntry(undefined)).toBe(false);
+  });
+});
+
+describe('daycare and boarding days', () => {
+  it('keeps the narrative, walk and mood on a daycare day', () => {
+    const clean = cleanDiaryInput({ date: '2026-11-20', text: ' Played with Max ', walkMinutes: 20, mood: 'happy', atDaycare: true });
+    expect(clean).toMatchObject({ text: 'Played with Max', walkMinutes: 20, mood: 'happy', atDaycare: true });
+    expect(clean.boarding).toBeUndefined();
+  });
+
+  it('clears the narrative, walk, mood and daycare on a boarding day', () => {
+    const clean = cleanDiaryInput({ date: '2026-11-21', text: 'leftover text', walkMinutes: 40, mood: 'sleepy', atDaycare: true, boarding: true });
+    expect(clean).toEqual({ date: '2026-11-21', text: '', walkMinutes: 0, mood: undefined, atDaycare: undefined, boarding: true });
+  });
+
+  it('only requires the narrative on a regular day', () => {
+    expect(needsNarrative({})).toBe(true);
+    expect(needsNarrative({ atDaycare: true })).toBe(false);
+    expect(needsNarrative({ boarding: true })).toBe(false);
+  });
+
+  it('turning boarding off again when editing removes the flag', () => {
+    const boarded = saveEntry([], { date: '2026-11-21', text: '', walkMinutes: 0, boarding: true }, null, () => 'b');
+    const edited = saveEntry(boarded, { date: '2026-11-21', text: 'Home early!', walkMinutes: 15 }, 'b', () => 'x');
+    expect(edited[0]).toMatchObject({ text: 'Home early!', walkMinutes: 15 });
+    expect(edited[0].boarding).toBeUndefined();
+  });
+
+  it('can be found by searching "daycare" or "boarding"', () => {
+    const list = [
+      entry('d', '2026-11-20', 10, 'Fun day', undefined),
+      { ...entry('e', '2026-11-19', 10, 'Fun day'), atDaycare: true },
+      { ...entry('f', '2026-11-18', 0, ''), boarding: true },
+    ];
+    expect(searchEntries(list, 'daycare').map((e) => e.id)).toEqual(['e']);
+    expect(searchEntries(list, 'boarding').map((e) => e.id)).toEqual(['f']);
+  });
+
+  it('marks boarding days in the 7-day walk data', () => {
+    const days = walksForLastDays([{ ...entry('f', '2026-11-17', 0, ''), boarding: true }], today);
+    expect(days.find((d) => d.date === '2026-11-17')).toEqual({ date: '2026-11-17', minutes: 0, hasEntry: true, boarding: true });
+    expect(days.find((d) => d.date === '2026-11-18')?.boarding).toBe(false);
+  });
+
+  it('accepts saved entries with or without the new fields, and rejects bad values', () => {
+    expect(isDiaryEntry({ ...entries[0], atDaycare: true })).toBe(true);
+    expect(isDiaryEntry({ ...entries[0], boarding: false })).toBe(true);
+    expect(isDiaryEntry({ ...entries[0], boarding: 'yes' })).toBe(false);
   });
 });

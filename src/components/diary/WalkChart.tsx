@@ -28,7 +28,7 @@ export default function WalkChart({ days, today }: { days: DayWalk[]; today: Dat
                 {active === i && (
                   <span className="walk-tooltip">
                     <strong>{format(date, 'EEE, MMM d')}</strong>
-                    {day.hasEntry ? (day.minutes > 0 ? formatMinutes(day.minutes) : 'No walk') : 'No entry'}
+                    {day.boarding ? 'Boarding' : day.hasEntry ? (day.minutes > 0 ? formatMinutes(day.minutes) : 'No walk') : 'No entry'}
                   </span>
                 )}
                 {day.minutes > 0 && <span className="walk-bar" style={{ height: `${height}%` }} />}
@@ -47,7 +47,7 @@ export default function WalkChart({ days, today }: { days: DayWalk[]; today: Dat
           {days.map((day) => (
             <tr key={day.date}>
               <td>{format(parseLocalDate(day.date), 'EEEE, MMMM d')}</td>
-              <td>{day.hasEntry ? formatMinutes(day.minutes) : 'No entry'}</td>
+              <td>{day.boarding ? 'Boarding' : day.hasEntry ? formatMinutes(day.minutes) : 'No entry'}</td>
             </tr>
           ))}
         </tbody>

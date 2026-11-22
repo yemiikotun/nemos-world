@@ -25,6 +25,13 @@ export interface DiaryEntry {
   /** Total walking time that day, in whole minutes (0 = no walk). */
   walkMinutes: number;
   mood?: Mood;
+  /** "Nemo is in Daycare Today" was ticked. */
+  atDaycare?: boolean;
+  /**
+   * "Nemo is in Boarding" was ticked. There's no way to know how a boarding day
+   * went, so a boarding entry has no text, walk or mood.
+   */
+  boarding?: boolean;
 }
 
 export type DiaryInput = Omit<DiaryEntry, 'id'>;
@@ -33,15 +40,33 @@ export function moodInfo(id: Mood) {
   return MOODS.find((m) => m.id === id)!;
 }
 
-/** Trim text and keep walk minutes a whole number between 0 and 600. */
+/**
+ * Tidy an entry before saving: trim the text and keep walk minutes a whole
+ * number from 0 to 600. A boarding day keeps only the date and the boarding
+ * flag (Nemo can't be at daycare and boarding on the same day).
+ */
 export function cleanDiaryInput(input: DiaryInput): DiaryInput {
+  if (input.boarding) {
+    return { date: input.date, text: '', walkMinutes: 0, mood: undefined, atDaycare: undefined, boarding: true };
+  }
   const minutes = Number.isFinite(input.walkMinutes) ? Math.round(input.walkMinutes) : 0;
   return {
     date: input.date,
     text: input.text.trim(),
     walkMinutes: Math.min(MAX_WALK_MINUTES, Math.max(0, minutes)),
     mood: input.mood || undefined,
+    atDaycare: input.atDaycare || undefined,
+    boarding: undefined,
   };
+}
+
+/**
+ * Whether the "What did Nemo do today?" text must be filled in. It's optional on
+ * daycare days (ticking the box already says something) and not used at all on
+ * boarding days.
+ */
+export function needsNarrative(input: Pick<DiaryInput, 'atDaycare' | 'boarding'>): boolean {
+  return !input.atDaycare && !input.boarding;
 }
 
 export function findByDate(entries: DiaryEntry[], date: string): DiaryEntry | undefined {
@@ -68,12 +93,14 @@ export function sortNewestFirst(entries: DiaryEntry[]): DiaryEntry[] {
   return [...entries].sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Entries whose text or mood contains every word of the query (case-insensitive). */
+/** Entries whose text, mood, or daycare/boarding tag contains every word of the query (case-insensitive). */
 export function searchEntries(entries: DiaryEntry[], query: string): DiaryEntry[] {
   const words = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (words.length === 0) return entries;
   return entries.filter((e) => {
-    const haystack = `${e.text} ${e.mood ? moodInfo(e.mood).label : ''}`.toLowerCase();
+    const haystack = [e.text, e.mood ? moodInfo(e.mood).label : '', e.atDaycare ? 'daycare' : '', e.boarding ? 'boarding' : '']
+      .join(' ')
+      .toLowerCase();
     return words.every((w) => haystack.includes(w));
   });
 }
@@ -82,6 +109,8 @@ export interface DayWalk {
   date: string;
   minutes: number;
   hasEntry: boolean;
+  /** Nemo was boarding, so his walks that day aren't known. */
+  boarding: boolean;
 }
 
 /** Walk minutes for each of the last `days` days, oldest first, ending today. */
@@ -89,7 +118,7 @@ export function walksForLastDays(entries: DiaryEntry[], today: Date, days = 7): 
   return Array.from({ length: days }, (_, i) => {
     const date = toIsoDate(addDays(today, i - (days - 1)));
     const entry = findByDate(entries, date);
-    return { date, minutes: entry?.walkMinutes ?? 0, hasEntry: Boolean(entry) };
+    return { date, minutes: entry?.walkMinutes ?? 0, hasEntry: Boolean(entry), boarding: Boolean(entry?.boarding) };
   });
 }
 
@@ -133,6 +162,8 @@ export function isDiaryEntry(value: unknown): value is DiaryEntry {
     /^\d{4}-\d{2}-\d{2}$/.test(v.date) &&
     typeof v.text === 'string' &&
     typeof v.walkMinutes === 'number' &&
-    (v.mood === undefined || MOODS.some((m) => m.id === v.mood))
+    (v.mood === undefined || MOODS.some((m) => m.id === v.mood)) &&
+    (v.atDaycare === undefined || typeof v.atDaycare === 'boolean') &&
+    (v.boarding === undefined || typeof v.boarding === 'boolean')
   );
 }
